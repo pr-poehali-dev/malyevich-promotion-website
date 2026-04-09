@@ -1,101 +1,75 @@
 import { useState, useEffect, useRef } from "react";
 import Icon from "@/components/ui/icon";
 
-const HERO_IMG = "https://cdn.poehali.dev/projects/f3228ce1-744a-4fad-bab4-b6f8dff8bac2/files/185cc81e-b689-4fcf-947b-f6649a0de40b.jpg";
+const IMG_PLASTER = "https://cdn.poehali.dev/projects/f3228ce1-744a-4fad-bab4-b6f8dff8bac2/files/9fa7e5a9-4078-49f0-8b8d-bf96f5a32deb.jpg";
+const IMG_PAINT = "https://cdn.poehali.dev/projects/f3228ce1-744a-4fad-bab4-b6f8dff8bac2/files/a053bf07-272c-4796-b7cb-ac07a034bfc6.jpg";
 
 const TICKER_ITEMS = [
-  "Больше заявок", "Меньше потерь", "Порядок в CRM",
-  "Готовые сметы", "Обработка звонков", "Менеджер на аутсорсе",
-  "Больше договоров", "Меньше хаоса", "Рост среднего чека",
+  "Шпаклёвка стен", "Безвоздушная покраска", "Механизированное нанесение",
+  "Квартиры под ключ", "Коммерческие объекты", "Идеальная поверхность",
+  "Быстрые сроки", "Гарантия качества",
 ];
 
-const PAINS = [
-  { quote: "Сегодня есть объекты, а что через месяц — непонятно", label: "Нестабильный поток заказов" },
-  { quote: "Люди пишут, а мы не всегда успеваем ответить", label: "Заявки теряются и сливаются" },
-  { quote: "После сметы — тишина. Клиент ушёл к тем, кто дешевле", label: "Низкая конверсия в договор" },
-  { quote: "Я всё тяну сам: прораб, продавец, маркетолог, диспетчер", label: "Собственник работает за всех" },
-  { quote: "Хорошо делаем, но нормально показать не можем", label: "Нет упаковки и портфолио" },
-  { quote: "На сметы уходит куча времени, иногда что-то забываем", label: "Сметы — медленно и с ошибками" },
+const ADVANTAGES = [
+  { icon: "Zap", title: "В 3 раза быстрее", desc: "Механизированный способ сокращает сроки работ в 3 раза по сравнению с ручным нанесением" },
+  { icon: "Layers", title: "Равномерный слой", desc: "Машинное нанесение обеспечивает идеально ровный слой шпаклёвки без перепадов и наплывов" },
+  { icon: "Sparkles", title: "Без следов и разводов", desc: "Безвоздушная покраска даёт гладкую, фабричную поверхность без полос и следов валика" },
+  { icon: "Wallet", title: "Экономия материала", desc: "Расход краски и шпаклёвки ниже на 20–30% за счёт точного дозирования оборудованием" },
+  { icon: "ShieldCheck", title: "Гарантия 2 года", desc: "Даём письменную гарантию на все выполненные работы — отвечаем за результат" },
+  { icon: "Building", title: "Любые объёмы", desc: "От однокомнатной квартиры до торгового центра — оборудование справляется с любой площадью" },
 ];
 
 const SERVICES = [
   {
-    icon: "PhoneCall",
-    title: "Обработка заявок",
-    desc: "Отвечаем на все входящие звонки, сообщения из WhatsApp, Telegram, Авито — записываем клиентов на замер. Пока вы на объекте.",
-    tag: "Горячее",
+    img: IMG_PLASTER,
+    tag: "Шпаклёвка",
+    title: "Механизированная шпаклёвка стен",
+    points: [
+      "Нанесение гипсовой шпаклёвки аппаратом PFT G4 / G5",
+      "Выравнивание стен под обои (2 слоя) и под покраску (3 слоя)",
+      "Заделка стыков ГКЛ и трещин",
+      "Финишное шлифование до идеальной гладкости",
+    ],
+    price: "от 250 ₽/м²",
   },
   {
-    icon: "TrendingUp",
-    title: "Лидогенерация",
-    desc: "Настраиваем рекламу, Авито, квизы и лендинг под вашу бригаду. Приводим целевые заявки на ремонт квартир.",
-    tag: null,
-  },
-  {
-    icon: "Users",
-    title: "Менеджер по продажам",
-    desc: "Квалифицируем лида, работаем с возражениями, дожимаем после сметы — доводим до подписания договора.",
-    tag: null,
-  },
-  {
-    icon: "FileText",
-    title: "Сметы и КП",
-    desc: "Готовим профессиональные сметы быстро и без ошибок. Клиенту приходит понятный расчёт — ему проще решиться.",
-    tag: null,
-  },
-  {
-    icon: "LayoutDashboard",
-    title: "CRM под ключ",
-    desc: "Внедряем и ведём CRM: карточки клиентов, этапы воронки, напоминания. Ни один лид не потеряется.",
-    tag: null,
-  },
-  {
-    icon: "Megaphone",
-    title: "Упаковка бригады",
-    desc: "Сайт, Авито, кейсы до/после, отзывы, соцсети. Упаковываем так, чтобы вам доверяли до первого звонка.",
-    tag: null,
+    img: IMG_PAINT,
+    tag: "Покраска",
+    title: "Безвоздушная покраска стен и потолков",
+    points: [
+      "Покраска аппаратом GRACO / Wagner без воздуха",
+      "Равномерное покрытие без полос и следов",
+      "Работа с любыми ЛКМ: латекс, акрил, силикон",
+      "Покраска потолков, стен, фасадов, конструкций",
+    ],
+    price: "от 150 ₽/м²",
   },
 ];
 
-const PACKAGES = [
-  {
-    name: "Старт",
-    price: "19 900",
-    period: "/ месяц",
-    desc: "Для бригад, которым нужен стабильный поток заявок",
-    features: ["Обработка входящих заявок", "Запись на замер", "Ведение CRM", "Отчёт по лидам"],
-    featured: false,
-  },
-  {
-    name: "Рост",
-    price: "39 900",
-    period: "/ месяц",
-    desc: "Для тех, кто хочет больше договоров без роста рекламного бюджета",
-    features: ["Всё из «Старт»", "Менеджер по продажам", "Дожим после сметы", "Скрипты продаж", "Авито + лендинг"],
-    featured: true,
-  },
-  {
-    name: "Офис",
-    price: "69 900",
-    period: "/ месяц",
-    desc: "Полный аутсорс офисных функций для компаний 5–15 человек",
-    features: ["Всё из «Рост»", "Сметы и КП", "Упаковка компании", "Контент и соцсети", "Еженедельные отчёты"],
-    featured: false,
-  },
+const PROCESS = [
+  { num: "01", title: "Выезд и замер", desc: "Бесплатно выезжаем на объект, оцениваем состояние поверхностей и объём работ" },
+  { num: "02", title: "Расчёт и договор", desc: "Считаем точную смету, фиксируем цену в договоре — без доплат и сюрпризов" },
+  { num: "03", title: "Подготовка", desc: "Грунтуем, заклеиваем, укрываем — подготавливаем помещение к работе" },
+  { num: "04", title: "Выполнение", desc: "Механизированное нанесение шпаклёвки и/или покраска безвоздушным аппаратом" },
+  { num: "05", title: "Контроль и сдача", desc: "Проверяем качество при боковом свете, устраняем замечания и сдаём объект" },
 ];
 
-const STEPS = [
-  { num: "01", title: "Заявка и звонок", desc: "Оставляете заявку. Мы созваниваемся в течение 15 минут, обсуждаем вашу ситуацию и цели." },
-  { num: "02", title: "Аудит и план", desc: "Разбираем текущую воронку, смотрим, где теряете заявки, и предлагаем конкретный план." },
-  { num: "03", title: "Запуск за 3 дня", desc: "Подключаемся к вашим каналам, настраиваем инструменты и начинаем работать." },
-  { num: "04", title: "Результат и отчёт", desc: "Каждую неделю — отчёт: сколько заявок, замеров, договоров. Прозрачно и по делу." },
+const PRICES = [
+  { service: "Шпаклёвка под обои (2 слоя)", price: "от 250 ₽/м²" },
+  { service: "Шпаклёвка под покраску (3 слоя)", price: "от 350 ₽/м²" },
+  { service: "Покраска стен (2 слоя)", price: "от 150 ₽/м²" },
+  { service: "Покраска потолков (2 слоя)", price: "от 180 ₽/м²" },
+  { service: "Грунтовка поверхностей", price: "от 50 ₽/м²" },
+  { service: "Заделка стыков ГКЛ", price: "от 120 ₽/п.м." },
+  { service: "Шлифовка стен", price: "от 80 ₽/м²" },
+  { service: "Комплекс: шпаклёвка + покраска", price: "от 450 ₽/м²" },
 ];
 
-const RESULTS = [
-  { num: "×2.4", label: "рост заявок в среднем за 2 месяца" },
-  { num: "68%", label: "конверсия из заявки в замер" },
-  { num: "3 дня", label: "до первых результатов после запуска" },
-  { num: "120+", label: "ремонтных бригад работают с нами" },
+const STATS = [
+  { num: "350+", label: "объектов выполнено" },
+  { num: "3×", label: "быстрее ручного способа" },
+  { num: "2 года", label: "гарантия на работы" },
+  { num: "24 ч", label: "расчёт сметы" },
 ];
 
 function useVisible(threshold = 0.12) {
@@ -125,7 +99,7 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
 export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [formData, setFormData] = useState({ name: "", phone: "", city: "", msg: "" });
+  const [form, setForm] = useState({ name: "", phone: "", area: "", msg: "" });
 
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 30);
@@ -145,25 +119,26 @@ export default function Index() {
       <header
         className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
         style={{
-          background: scrolled ? "rgba(17,17,16,0.97)" : "var(--black)",
+          background: scrolled ? "rgba(17,17,16,0.97)" : "transparent",
           backdropFilter: scrolled ? "blur(12px)" : "none",
-          borderBottom: scrolled ? "1px solid rgba(255,255,255,0.06)" : "none",
         }}
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
-          <button onClick={() => go("hero")} className="flex items-center gap-1">
-            <span className="font-oswald text-xl font-bold tracking-wider" style={{ color: "var(--orange)" }}>РЕМ</span>
-            <span className="font-oswald text-xl font-light tracking-wider text-white">ОФИС</span>
+          <button onClick={() => go("hero")} className="flex items-center gap-2">
+            <div className="w-8 h-8 flex items-center justify-center" style={{ background: "var(--orange)" }}>
+              <Icon name="Paintbrush" size={16} className="text-white" />
+            </div>
+            <span className="font-oswald text-lg font-bold tracking-wider text-white">МАЛЕВИЧ</span>
           </button>
 
           <nav className="hidden md:flex items-center gap-7">
-            {[["pains", "Проблемы"], ["services", "Услуги"], ["packages", "Тарифы"], ["how", "Как работаем"], ["contacts", "Контакты"]].map(([id, l]) => (
+            {[["services", "Услуги"], ["advantages", "Преимущества"], ["prices", "Цены"], ["process", "Этапы"], ["contacts", "Контакты"]].map(([id, l]) => (
               <button key={id} onClick={() => go(id)} className="nav-item">{l}</button>
             ))}
           </nav>
 
           <button className="btn-primary hidden md:inline-flex py-2.5 px-6 text-xs" onClick={() => go("contacts")}>
-            Получить консультацию
+            Рассчитать стоимость
           </button>
 
           <button className="md:hidden text-white" onClick={() => setMenuOpen(!menuOpen)}>
@@ -173,10 +148,10 @@ export default function Index() {
 
         {menuOpen && (
           <div className="md:hidden px-6 py-5 flex flex-col gap-5" style={{ background: "var(--black)", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
-            {[["pains", "Проблемы"], ["services", "Услуги"], ["packages", "Тарифы"], ["how", "Как работаем"], ["contacts", "Контакты"]].map(([id, l]) => (
+            {[["services", "Услуги"], ["advantages", "Преимущества"], ["prices", "Цены"], ["process", "Этапы"], ["contacts", "Контакты"]].map(([id, l]) => (
               <button key={id} onClick={() => go(id)} className="nav-item text-left">{l}</button>
             ))}
-            <button className="btn-primary text-xs" onClick={() => go("contacts")}>Получить консультацию</button>
+            <button className="btn-primary text-xs" onClick={() => go("contacts")}>Рассчитать стоимость</button>
           </div>
         )}
       </header>
@@ -184,59 +159,84 @@ export default function Index() {
       {/* HERO */}
       <section id="hero" className="relative min-h-screen flex items-center overflow-hidden" style={{ background: "var(--black)" }}>
         <div className="absolute inset-0">
-          <img src={HERO_IMG} alt="hero" className="w-full h-full object-cover" style={{ opacity: 0.18 }} />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(110deg, rgba(17,17,16,0.98) 40%, rgba(17,17,16,0.7) 100%)" }} />
+          <img src={IMG_PLASTER} alt="" className="w-full h-full object-cover" style={{ opacity: 0.2 }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(135deg, rgba(17,17,16,0.97) 35%, rgba(17,17,16,0.6) 100%)" }} />
         </div>
+
         <div className="absolute left-0 top-0 bottom-0 w-1" style={{ background: "var(--orange)" }} />
 
-        <div className="relative z-10 max-w-6xl mx-auto px-6 w-full pt-20 pb-16">
-          <div className="max-w-3xl">
-            <div className="section-tag mb-6 animate-fade-left opacity-0" style={{ animationFillMode: "forwards", color: "var(--orange)" }}>
-              Аутсорс для ремонтных бригад
-            </div>
+        {/* Decorative grid lines */}
+        <div className="absolute inset-0 pointer-events-none" style={{ opacity: 0.03 }}>
+          <div className="absolute top-0 bottom-0 left-1/4 w-px bg-white" />
+          <div className="absolute top-0 bottom-0 left-1/2 w-px bg-white" />
+          <div className="absolute top-0 bottom-0 left-3/4 w-px bg-white" />
+        </div>
 
-            <h1
-              className="font-oswald font-bold text-white leading-none mb-6 animate-fade-up opacity-0 delay-100"
-              style={{ animationFillMode: "forwards", fontSize: "clamp(2.8rem, 7vw, 5.5rem)", lineHeight: 1.05 }}
-            >
-              Пока вы<br />
-              <span style={{ color: "var(--orange)" }}>на объекте —</span><br />
-              мы закрываем<br />
-              ваш офис
-            </h1>
+        <div className="relative z-10 max-w-6xl mx-auto px-6 w-full pt-24 pb-16">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="section-tag mb-6 animate-fade-left opacity-0" style={{ animationFillMode: "forwards" }}>
+                Механизированная отделка
+              </div>
 
-            <p
-              className="font-ibm text-base leading-relaxed mb-8 animate-fade-up opacity-0 delay-200"
-              style={{ animationFillMode: "forwards", color: "rgba(255,255,255,0.6)", maxWidth: "520px", fontSize: "0.95rem" }}
-            >
-              Берём на себя обработку заявок, сметы, продажи, CRM и упаковку.
-              Вы делаете ремонт — мы делаем так, чтобы следующий объект уже был записан.
-            </p>
-
-            <div className="flex flex-wrap gap-3 animate-fade-up opacity-0 delay-300" style={{ animationFillMode: "forwards" }}>
-              <button className="btn-primary" onClick={() => go("contacts")}>
-                <Icon name="ArrowRight" size={16} />
-                Хочу больше заказов
-              </button>
-              <button
-                className="btn-secondary"
-                onClick={() => go("packages")}
-                style={{ borderColor: "rgba(255,255,255,0.2)", color: "rgba(255,255,255,0.75)" }}
+              <h1
+                className="font-oswald font-bold text-white leading-none mb-6 animate-fade-up opacity-0 delay-100"
+                style={{ animationFillMode: "forwards", fontSize: "clamp(2.6rem, 6.5vw, 5rem)", lineHeight: 1.05 }}
               >
-                Посмотреть тарифы
-              </button>
+                Шпаклёвка<br />
+                <span style={{ color: "var(--orange)" }}>и покраска</span><br />
+                стен
+              </h1>
+
+              <p
+                className="font-ibm leading-relaxed mb-8 animate-fade-up opacity-0 delay-200"
+                style={{ animationFillMode: "forwards", color: "rgba(255,255,255,0.55)", maxWidth: "460px", fontSize: "0.95rem" }}
+              >
+                Механизированное нанесение шпаклёвки и безвоздушная покраска.
+                В 3 раза быстрее ручного способа. Идеальная поверхность — без разводов и следов.
+              </p>
+
+              <div className="flex flex-wrap gap-3 mb-10 animate-fade-up opacity-0 delay-300" style={{ animationFillMode: "forwards" }}>
+                <button className="btn-primary" onClick={() => go("contacts")}>
+                  <Icon name="Calculator" size={16} />
+                  Рассчитать стоимость
+                </button>
+                <button
+                  className="btn-secondary"
+                  onClick={() => go("services")}
+                  style={{ borderColor: "rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.65)" }}
+                >
+                  Подробнее об услугах
+                </button>
+              </div>
+
+              {/* Mini stats */}
+              <div
+                className="flex flex-wrap gap-x-8 gap-y-3 pt-8 animate-fade-up opacity-0 delay-400"
+                style={{ animationFillMode: "forwards", borderTop: "1px solid rgba(255,255,255,0.08)" }}
+              >
+                {STATS.map((s) => (
+                  <div key={s.label}>
+                    <div className="font-oswald font-bold text-2xl" style={{ color: "var(--orange)" }}>{s.num}</div>
+                    <div className="font-ibm text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div
-              className="mt-12 pt-8 flex flex-wrap gap-x-10 gap-y-4 animate-fade-up opacity-0 delay-400"
-              style={{ animationFillMode: "forwards", borderTop: "1px solid rgba(255,255,255,0.08)" }}
-            >
-              {RESULTS.map((r) => (
-                <div key={r.label}>
-                  <div className="result-num" style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)" }}>{r.num}</div>
-                  <div className="font-ibm text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.45)", maxWidth: "140px", lineHeight: 1.4 }}>{r.label}</div>
+            {/* Hero image block */}
+            <div className="hidden lg:block relative animate-fade-up opacity-0 delay-300" style={{ animationFillMode: "forwards" }}>
+              <div className="relative">
+                <img src={IMG_PLASTER} alt="Механизированная шпаклёвка" className="w-full aspect-[4/5] object-cover" />
+                <div className="absolute bottom-0 left-0 right-0 p-5" style={{ background: "linear-gradient(transparent, rgba(17,17,16,0.9))" }}>
+                  <div className="font-oswald text-white text-sm font-semibold tracking-wider">МЕХАНИЗИРОВАННОЕ НАНЕСЕНИЕ</div>
+                  <div className="font-ibm text-xs mt-1" style={{ color: "rgba(255,255,255,0.5)" }}>Аппараты PFT G4 / G5</div>
                 </div>
-              ))}
+              </div>
+              {/* Small accent image */}
+              <div className="absolute -bottom-6 -left-6 w-36 h-36 border-4" style={{ borderColor: "var(--orange)" }}>
+                <img src={IMG_PAINT} alt="Безвоздушная покраска" className="w-full h-full object-cover" />
+              </div>
             </div>
           </div>
         </div>
@@ -251,160 +251,180 @@ export default function Index() {
         </div>
       </div>
 
-      {/* PAINS */}
-      <section id="pains" className="py-24" style={{ background: "var(--gray-1)" }}>
+      {/* SERVICES */}
+      <section id="services" className="py-24" style={{ background: "#fff" }}>
         <div className="max-w-6xl mx-auto px-6">
-          <Reveal className="mb-14">
-            <div className="section-tag mb-4">Узнаёте себя?</div>
+          <Reveal className="mb-16">
+            <div className="section-tag mb-4">Наши услуги</div>
             <h2 className="font-oswald font-bold" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: "var(--black)" }}>
-              Типичный день <span style={{ color: "var(--orange)" }}>прораба</span>
+              Что мы <span style={{ color: "var(--orange)" }}>делаем</span>
             </h2>
           </Reveal>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {PAINS.map((p, i) => (
-              <Reveal key={p.label} delay={i * 60}>
-                <div className="pain-card">
-                  <p className="font-ibm text-sm italic mb-3" style={{ color: "var(--gray-4)" }}>
-                    «{p.quote}»
-                  </p>
-                  <div className="font-oswald text-sm font-semibold" style={{ color: "var(--black)", letterSpacing: "0.05em" }}>
-                    → {p.label}
+          <div className="flex flex-col gap-20">
+            {SERVICES.map((s, idx) => (
+              <Reveal key={s.title}>
+                <div className={`grid md:grid-cols-2 gap-10 items-center ${idx % 2 === 1 ? "md:[direction:rtl]" : ""}`}>
+                  <div className="relative" style={{ direction: "ltr" }}>
+                    <img src={s.img} alt={s.title} className="w-full aspect-[4/3] object-cover" />
+                    <div className="absolute top-4 left-4">
+                      <span className="font-oswald text-xs font-semibold px-3 py-1.5 tracking-widest" style={{ background: "var(--orange)", color: "#fff" }}>
+                        {s.tag}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div style={{ direction: "ltr" }}>
+                    <h3 className="font-oswald text-2xl font-bold mb-4" style={{ color: "var(--black)" }}>{s.title}</h3>
+                    <ul className="flex flex-col gap-3 mb-6">
+                      {s.points.map((p) => (
+                        <li key={p} className="flex items-start gap-3">
+                          <span className="mt-1.5 w-1.5 h-1.5 shrink-0" style={{ background: "var(--orange)" }} />
+                          <span className="font-ibm text-sm" style={{ color: "var(--gray-4)" }}>{p}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="flex items-center gap-4">
+                      <span className="font-oswald text-2xl font-bold" style={{ color: "var(--orange)" }}>{s.price}</span>
+                      <button className="btn-primary py-2.5 px-5 text-xs" onClick={() => go("contacts")}>Рассчитать</button>
+                    </div>
                   </div>
                 </div>
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
 
-          <Reveal className="mt-10">
+      {/* ADVANTAGES */}
+      <section id="advantages" className="py-24" style={{ background: "var(--gray-1)" }}>
+        <div className="max-w-6xl mx-auto px-6">
+          <Reveal className="mb-14">
+            <div className="section-tag mb-4">Почему мы</div>
+            <h2 className="font-oswald font-bold" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: "var(--black)" }}>
+              Преимущества <span style={{ color: "var(--orange)" }}>механизации</span>
+            </h2>
+          </Reveal>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {ADVANTAGES.map((a, i) => (
+              <Reveal key={a.title} delay={i * 60}>
+                <div className="service-card h-full">
+                  <div className="w-11 h-11 flex items-center justify-center mb-4" style={{ background: "rgba(240,90,26,0.08)", color: "var(--orange)" }}>
+                    <Icon name={a.icon} size={20} fallback="Star" />
+                  </div>
+                  <h3 className="font-oswald text-lg font-semibold mb-2" style={{ color: "var(--black)" }}>{a.title}</h3>
+                  <p className="font-ibm text-sm leading-relaxed" style={{ color: "var(--gray-4)" }}>{a.desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* COMPARISON */}
+      <section className="py-20" style={{ background: "var(--black)" }}>
+        <div className="max-w-6xl mx-auto px-6">
+          <Reveal className="mb-12 text-center">
+            <div className="section-tag justify-center mb-4" style={{ color: "var(--orange)" }}>Сравнение</div>
+            <h2 className="font-oswald font-bold text-white" style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)" }}>
+              Ручной способ <span style={{ color: "var(--gray-4)" }}>vs</span> <span style={{ color: "var(--orange)" }}>механизированный</span>
+            </h2>
+          </Reveal>
+
+          <Reveal>
+            <div className="grid md:grid-cols-2 gap-5">
+              {/* Manual */}
+              <div className="p-7" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+                <div className="font-oswald text-lg font-semibold mb-5 tracking-wider" style={{ color: "var(--gray-4)" }}>Ручной способ</div>
+                {["Долго — от 5 дней на комнату", "Неравномерный слой, наплывы", "Следы валика и кисти видны", "Большой расход материала", "Зависит от мастерства рабочего"].map((item) => (
+                  <div key={item} className="flex items-center gap-3 py-2.5" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
+                    <Icon name="X" size={14} className="shrink-0" style={{ color: "#E55050" }} />
+                    <span className="font-ibm text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Mechanized */}
+              <div className="p-7" style={{ background: "rgba(240,90,26,0.08)", border: "1px solid rgba(240,90,26,0.2)" }}>
+                <div className="font-oswald text-lg font-semibold mb-5 tracking-wider" style={{ color: "var(--orange)" }}>Механизированный</div>
+                {["Быстро — 1–2 дня на комнату", "Идеально ровный слой по всей площади", "Гладкая поверхность без следов", "Экономия материала 20–30%", "Стабильное качество на каждом объекте"].map((item) => (
+                  <div key={item} className="flex items-center gap-3 py-2.5" style={{ borderBottom: "1px solid rgba(240,90,26,0.08)" }}>
+                    <Icon name="Check" size={14} className="shrink-0" style={{ color: "var(--orange)" }} />
+                    <span className="font-ibm text-sm" style={{ color: "rgba(255,255,255,0.75)" }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* PRICES */}
+      <section id="prices" className="py-24" style={{ background: "#fff" }}>
+        <div className="max-w-6xl mx-auto px-6">
+          <Reveal className="mb-14">
+            <div className="section-tag mb-4">Стоимость</div>
+            <h2 className="font-oswald font-bold" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: "var(--black)" }}>
+              Цены на <span style={{ color: "var(--orange)" }}>работы</span>
+            </h2>
+            <p className="font-ibm text-sm mt-3" style={{ color: "var(--gray-4)" }}>
+              Точная стоимость — после осмотра объекта. Замер бесплатный.
+            </p>
+          </Reveal>
+
+          <Reveal>
+            <div className="overflow-hidden" style={{ border: "1px solid var(--gray-2)" }}>
+              {PRICES.map((p, i) => (
+                <div
+                  key={p.service}
+                  className="flex items-center justify-between px-6 py-4 transition-colors hover:bg-gray-50"
+                  style={{ borderBottom: i < PRICES.length - 1 ? "1px solid var(--gray-2)" : "none" }}
+                >
+                  <span className="font-ibm text-sm" style={{ color: "var(--text-body)" }}>{p.service}</span>
+                  <span className="font-oswald font-bold text-lg shrink-0 ml-4" style={{ color: "var(--orange)" }}>{p.price}</span>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+
+          <Reveal className="mt-6">
             <div className="p-6 flex flex-col md:flex-row md:items-center justify-between gap-4" style={{ background: "var(--black)" }}>
-              <p className="font-ibm text-white text-base" style={{ maxWidth: "560px" }}>
-                <strong style={{ color: "var(--orange)" }}>Это нормально — на старте.</strong>{" "}
-                Но это не должно продолжаться вечно. Всё это можно делегировать.
-              </p>
+              <div>
+                <p className="font-oswald text-white text-lg font-semibold tracking-wide">Комплексный расчёт — бесплатно</p>
+                <p className="font-ibm text-sm mt-1" style={{ color: "rgba(255,255,255,0.45)" }}>Выезд замерщика, точная смета и фиксация цены в договоре</p>
+              </div>
               <button className="btn-primary shrink-0" onClick={() => go("contacts")}>
-                Хочу делегировать
+                <Icon name="Calculator" size={15} />
+                Вызвать замерщика
               </button>
             </div>
           </Reveal>
         </div>
       </section>
 
-      {/* SERVICES */}
-      <section id="services" className="py-24" style={{ background: "#fff" }}>
+      {/* PROCESS */}
+      <section id="process" className="py-24" style={{ background: "var(--gray-1)" }}>
         <div className="max-w-6xl mx-auto px-6">
           <Reveal className="mb-14">
-            <div className="section-tag mb-4">Что мы берём на себя</div>
+            <div className="section-tag mb-4">Как мы работаем</div>
             <h2 className="font-oswald font-bold" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: "var(--black)" }}>
-              Услуги
+              Этапы работы
             </h2>
-            <p className="font-ibm text-sm mt-3" style={{ color: "var(--gray-4)", maxWidth: "480px" }}>
-              Берём ровно те функции, которые отнимают время у собственника — и не требуют строителя на месте.
-            </p>
           </Reveal>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {SERVICES.map((s, i) => (
-              <Reveal key={s.title} delay={i * 70}>
-                <div className="service-card h-full">
-                  {s.tag && (
-                    <span className="inline-block font-oswald text-xs font-semibold px-2 py-0.5 mb-4" style={{ background: "var(--orange)", color: "#fff", letterSpacing: "0.08em" }}>
-                      {s.tag}
-                    </span>
+          <div className="grid md:grid-cols-5 gap-0">
+            {PROCESS.map((s, i) => (
+              <Reveal key={s.num} delay={i * 70}>
+                <div className="relative pl-5 pb-10 md:pb-0 md:pl-0 md:pr-6">
+                  {/* Connecting line */}
+                  {i < PROCESS.length - 1 && (
+                    <div className="hidden md:block absolute top-5 right-0 left-16 h-px" style={{ background: "var(--gray-2)" }} />
                   )}
-                  <div className="w-10 h-10 flex items-center justify-center mb-4" style={{ background: "rgba(240,90,26,0.08)", color: "var(--orange)" }}>
-                    <Icon name={s.icon} size={18} fallback="Star" />
-                  </div>
-                  <h3 className="font-oswald text-lg font-semibold mb-2" style={{ color: "var(--black)" }}>{s.title}</h3>
-                  <p className="font-ibm text-sm leading-relaxed" style={{ color: "var(--gray-4)" }}>{s.desc}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PACKAGES */}
-      <section id="packages" className="py-24" style={{ background: "var(--gray-1)" }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <Reveal className="mb-14">
-            <div className="section-tag mb-4">Стоимость</div>
-            <h2 className="font-oswald font-bold" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: "var(--black)" }}>
-              Тарифы
-            </h2>
-            <p className="font-ibm text-sm mt-3" style={{ color: "var(--gray-4)" }}>
-              Фиксированная оплата. Без скрытых процентов и сюрпризов.
-            </p>
-          </Reveal>
-
-          <div className="grid md:grid-cols-3 gap-5">
-            {PACKAGES.map((p, i) => (
-              <Reveal key={p.name} delay={i * 80}>
-                <div className={`package-card h-full flex flex-col ${p.featured ? "featured" : ""}`}>
-                  {p.featured && (
-                    <div className="font-oswald text-xs font-semibold tracking-widest mb-4" style={{ color: "rgba(255,255,255,0.7)" }}>
-                      ★ ПОПУЛЯРНЫЙ
-                    </div>
-                  )}
-                  <div className="font-oswald text-2xl font-bold mb-1 tracking-wide" style={{ color: p.featured ? "#fff" : "var(--orange)" }}>
-                    {p.name}
-                  </div>
-                  <div className="flex items-end gap-1 mb-3">
-                    <span className="font-oswald font-bold" style={{ fontSize: "2.4rem", lineHeight: 1, color: "#fff" }}>{p.price} ₽</span>
-                    <span className="font-ibm text-sm mb-1" style={{ color: p.featured ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.5)" }}>{p.period}</span>
-                  </div>
-                  <p className="font-ibm text-sm mb-5" style={{ color: p.featured ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.55)" }}>
-                    {p.desc}
-                  </p>
-                  <ul className="flex flex-col gap-2.5 mb-8 flex-1">
-                    {p.features.map((f) => (
-                      <li key={f} className="flex items-start gap-2">
-                        <span style={{ color: p.featured ? "#fff" : "var(--orange)" }}>✓</span>
-                        <span className="font-ibm text-sm" style={{ color: p.featured ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.65)" }}>{f}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <button
-                    onClick={() => go("contacts")}
-                    className={p.featured ? "btn-white" : "btn-secondary"}
-                    style={p.featured ? {} : { borderColor: "rgba(255,255,255,0.25)", color: "rgba(255,255,255,0.8)" }}
-                  >
-                    Начать с {p.name}
-                  </button>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          <Reveal className="mt-6 text-center">
-            <p className="font-ibm text-sm" style={{ color: "var(--gray-4)" }}>
-              Нужно что-то другое?{" "}
-              <button onClick={() => go("contacts")} style={{ color: "var(--orange)", textDecoration: "underline", background: "none", border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: "inherit" }}>
-                Обсудим индивидуально
-              </button>
-            </p>
-          </Reveal>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section id="how" className="py-24" style={{ background: "#fff" }}>
-        <div className="max-w-6xl mx-auto px-6">
-          <Reveal className="mb-14">
-            <div className="section-tag mb-4">Процесс</div>
-            <h2 className="font-oswald font-bold" style={{ fontSize: "clamp(2rem, 4vw, 3rem)", color: "var(--black)" }}>
-              Как мы работаем
-            </h2>
-          </Reveal>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {STEPS.map((s, i) => (
-              <Reveal key={s.num} delay={i * 80}>
-                <div>
-                  <div className="step-num">{s.num}</div>
-                  <div className="my-3" style={{ width: "40px", height: "2px", background: "var(--gray-2)" }} />
-                  <h3 className="font-oswald text-lg font-semibold mb-2" style={{ color: "var(--black)" }}>{s.title}</h3>
-                  <p className="font-ibm text-sm leading-relaxed" style={{ color: "var(--gray-4)" }}>{s.desc}</p>
+                  <div className="step-num" style={{ fontSize: "2.5rem" }}>{s.num}</div>
+                  <div className="my-2" style={{ width: "30px", height: "2px", background: "var(--orange)" }} />
+                  <h3 className="font-oswald text-base font-semibold mb-1.5" style={{ color: "var(--black)" }}>{s.title}</h3>
+                  <p className="font-ibm text-xs leading-relaxed" style={{ color: "var(--gray-4)" }}>{s.desc}</p>
                 </div>
               </Reveal>
             ))}
@@ -413,14 +433,14 @@ export default function Index() {
       </section>
 
       {/* RESULTS STRIP */}
-      <section className="py-16" style={{ background: "var(--black)" }}>
+      <section className="py-14" style={{ background: "var(--orange)" }}>
         <div className="max-w-6xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {RESULTS.map((r, i) => (
-              <Reveal key={r.label} delay={i * 60}>
+            {STATS.map((s, i) => (
+              <Reveal key={s.label} delay={i * 50}>
                 <div className="text-center">
-                  <div className="result-num">{r.num}</div>
-                  <div className="font-ibm text-xs mt-2" style={{ color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>{r.label}</div>
+                  <div className="font-oswald font-bold text-white" style={{ fontSize: "clamp(2rem, 5vw, 3.2rem)" }}>{s.num}</div>
+                  <div className="font-ibm text-xs mt-1" style={{ color: "rgba(255,255,255,0.7)" }}>{s.label}</div>
                 </div>
               </Reveal>
             ))}
@@ -429,18 +449,18 @@ export default function Index() {
       </section>
 
       {/* CTA */}
-      <section className="py-20" style={{ background: "var(--orange)" }}>
+      <section className="py-20" style={{ background: "var(--black)" }}>
         <div className="max-w-6xl mx-auto px-6 text-center">
           <Reveal>
             <h2 className="font-oswald font-bold text-white mb-4" style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>
-              Хватит тянуть всё на себе
+              Идеальные стены —<br /><span style={{ color: "var(--orange)" }}>без переплат за сроки</span>
             </h2>
-            <p className="font-ibm text-white mb-8 mx-auto" style={{ opacity: 0.85, maxWidth: "500px", fontSize: "0.95rem" }}>
-              Первая консультация — бесплатно. Расскажите о вашей ситуации, и мы предложим конкретный план.
+            <p className="font-ibm text-white mb-8 mx-auto" style={{ opacity: 0.55, maxWidth: "520px", fontSize: "0.95rem" }}>
+              Оставьте заявку — рассчитаем стоимость за 1 час. Замер бесплатно.
             </p>
-            <button className="btn-white" onClick={() => go("contacts")}>
+            <button className="btn-primary" onClick={() => go("contacts")}>
               <Icon name="ArrowRight" size={16} />
-              Записаться на консультацию
+              Получить расчёт
             </button>
           </Reveal>
         </div>
@@ -453,25 +473,39 @@ export default function Index() {
             <Reveal>
               <div className="section-tag mb-5" style={{ color: "var(--orange)" }}>Заявка</div>
               <h2 className="font-oswald font-bold text-white mb-3" style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)" }}>
-                Оставьте заявку —<br />
-                <span style={{ color: "var(--orange)" }}>ответим за 15 минут</span>
+                Бесплатный замер<br />
+                <span style={{ color: "var(--orange)" }}>и расчёт за 1 час</span>
               </h2>
-              <p className="font-ibm text-sm mb-8" style={{ color: "rgba(255,255,255,0.5)" }}>
-                Созвонимся, разберём вашу ситуацию и предложим конкретный вариант. Без воды и навязывания.
+              <p className="font-ibm text-sm mb-8" style={{ color: "rgba(255,255,255,0.45)" }}>
+                Оставьте контакты — перезвоним, обсудим объём работ и назовём точную цену.
               </p>
 
-              <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-4 mb-8">
                 {[
                   { icon: "Phone", val: "+7 (900) 000-00-00" },
                   { icon: "MessageCircle", val: "Telegram / WhatsApp" },
-                  { icon: "Clock", val: "Пн–Вс, 9:00–21:00" },
+                  { icon: "MapPin", val: "Москва и МО" },
+                  { icon: "Clock", val: "Пн–Вс, 8:00–21:00" },
                 ].map((c) => (
                   <div key={c.val} className="flex items-center gap-3">
-                    <div className="w-8 h-8 flex items-center justify-center shrink-0" style={{ background: "rgba(240,90,26,0.15)", color: "var(--orange)" }}>
-                      <Icon name={c.icon} size={15} fallback="Info" />
+                    <div className="w-9 h-9 flex items-center justify-center shrink-0" style={{ background: "rgba(240,90,26,0.12)", color: "var(--orange)" }}>
+                      <Icon name={c.icon} size={16} fallback="Info" />
                     </div>
-                    <span className="font-ibm text-sm" style={{ color: "rgba(255,255,255,0.7)" }}>{c.val}</span>
+                    <span className="font-ibm text-sm" style={{ color: "rgba(255,255,255,0.65)" }}>{c.val}</span>
                   </div>
+                ))}
+              </div>
+
+              {/* Trust badges */}
+              <div className="flex flex-wrap gap-3">
+                {["Договор", "Гарантия 2 года", "Фиксированная цена"].map((b) => (
+                  <span
+                    key={b}
+                    className="font-ibm text-xs px-3 py-1.5"
+                    style={{ border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" }}
+                  >
+                    {b}
+                  </span>
                 ))}
               </div>
             </Reveal>
@@ -481,34 +515,34 @@ export default function Index() {
                 <input
                   className="field-dark"
                   placeholder="Ваше имя"
-                  value={formData.name}
-                  onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  value={form.name}
+                  onChange={e => setForm({ ...form, name: e.target.value })}
                 />
                 <input
                   className="field-dark"
-                  placeholder="Телефон или Telegram"
+                  placeholder="Телефон"
                   type="tel"
-                  value={formData.phone}
-                  onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                  value={form.phone}
+                  onChange={e => setForm({ ...form, phone: e.target.value })}
                 />
                 <input
                   className="field-dark"
-                  placeholder="Город"
-                  value={formData.city}
-                  onChange={e => setFormData({ ...formData, city: e.target.value })}
+                  placeholder="Площадь (м²) — примерно"
+                  value={form.area}
+                  onChange={e => setForm({ ...form, area: e.target.value })}
                 />
                 <textarea
                   className="field-dark resize-none"
-                  placeholder="Коротко о вашей бригаде: сколько человек, какие объекты, главная проблема"
+                  placeholder="Что нужно сделать? Например: шпаклёвка под покраску, 3-комнатная квартира, новостройка"
                   rows={4}
-                  value={formData.msg}
-                  onChange={e => setFormData({ ...formData, msg: e.target.value })}
+                  value={form.msg}
+                  onChange={e => setForm({ ...form, msg: e.target.value })}
                 />
                 <button className="btn-primary mt-1">
                   <Icon name="Send" size={15} />
                   Отправить заявку
                 </button>
-                <p className="font-ibm text-xs text-center" style={{ color: "rgba(255,255,255,0.25)" }}>
+                <p className="font-ibm text-xs text-center" style={{ color: "rgba(255,255,255,0.2)" }}>
                   Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности
                 </p>
               </div>
@@ -518,17 +552,19 @@ export default function Index() {
       </section>
 
       {/* FOOTER */}
-      <footer className="py-6 border-t" style={{ background: "var(--black)", borderColor: "rgba(255,255,255,0.06)" }}>
+      <footer className="py-6" style={{ background: "var(--black)", borderTop: "1px solid rgba(255,255,255,0.04)" }}>
         <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-1">
-            <span className="font-oswald text-lg font-bold" style={{ color: "var(--orange)" }}>РЕМ</span>
-            <span className="font-oswald text-lg font-light text-white">ОФИС</span>
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 flex items-center justify-center" style={{ background: "var(--orange)" }}>
+              <Icon name="Paintbrush" size={11} className="text-white" />
+            </div>
+            <span className="font-oswald text-base font-bold tracking-wider text-white">МАЛЕВИЧ</span>
           </div>
-          <div className="font-ibm text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>
-            © 2024 РемОфис. Аутсорс для ремонтных бригад.
+          <div className="font-ibm text-xs" style={{ color: "rgba(255,255,255,0.2)" }}>
+            © 2024 Малевич. Механизированная шпаклёвка и безвоздушная покраска.
           </div>
           <div className="flex gap-6">
-            {[["pains", "Проблемы"], ["services", "Услуги"], ["packages", "Тарифы"]].map(([id, l]) => (
+            {[["services", "Услуги"], ["prices", "Цены"], ["contacts", "Контакты"]].map(([id, l]) => (
               <button key={id} onClick={() => go(id)} className="nav-item" style={{ fontSize: "0.7rem" }}>{l}</button>
             ))}
           </div>
